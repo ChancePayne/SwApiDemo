@@ -1,5 +1,9 @@
 package com.lambdaschool.swapi;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,78 +12,30 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwApiListFragment.OnListFragmentInteractionListener {
+
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
 
-        /*(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final ArrayList<Transport> allTransports = SwApiDao.getAllTransports();
-                for(Transport transport: allTransports) {
-                    Log.i("Transports Result", transport.toString());
-                }
-            }
-        })).start();*/
+        Fragment fragment = new SwApiListFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).commit();
+    }
 
-
-        AtomicBoolean canceled = new AtomicBoolean(false);
-        SwApiDao.getAllPlanets(canceled, new SwApiDao.ObjectCallback<ArrayList<Planet>>() {
-            @Override
-            public void returnPlanets(final ArrayList<Planet> planets) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((TextView) findViewById(R.id.output_text_view)).setText(planets.toString());
-                    }
-                });
-            }
-        });
-        try {
-            Thread.sleep(150);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    @Override
+    public void onSwApiObjectListFragmentInteraction(SwApiObject item) {
+        if (getResources().getBoolean(R.bool.is_tablet)) {
+            // fragment_holder_detail
+            final DetailFragment detailFragment = DetailFragment.newInstance(item);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder_detail, detailFragment).commit();
+        } else {
+            Intent intent = new Intent(context, PhoneDetailActivity.class);
+            intent.putExtra("swapi_item", item);
+            startActivity(intent);
         }
-        canceled.set(true);
-
-        /*final long start = System.currentTimeMillis();
-        SwApiDao.getAllTransports(new SwApiDao.ObjectCallback<Transport>() {
-            @Override
-            public void returnPlanets(final Transport transports) {
-                Log.i("Transport Timer", Long.toString(System.currentTimeMillis() - start));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((TextView) findViewById(R.id.output_text_view)).append(
-                                transports.getClass().getSimpleName() +
-                                " - " +
-                                transports.getName() +
-                                "\n");
-                    }
-                });
-            }
-        });*/
-
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    synchronized (allPlanets) {
-                        allPlanets.wait();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((TextView) findViewById(R.id.output_text_view)).setText(allPlanets.toString());
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();*/
     }
 }

@@ -3,12 +3,12 @@ package com.lambdaschool.swapi;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Transport {
-    protected String name, model, manufacturer, category;
+public class Transport extends SwApiObject {
+    protected String model, manufacturer, category, url;
     protected long cost, maxSpeed;
 
     public Transport(String name, String model, String manufacturer, String category, int cost) {
-        this.name = name;
+        super.name = name;
         this.model = model;
         this.manufacturer = manufacturer;
         this.category = category;
@@ -17,7 +17,7 @@ public class Transport {
 
     public Transport(JSONObject json) {
         try {
-            this.name = json.getString("name");
+            super.name = json.getString("name");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -32,12 +32,25 @@ public class Transport {
             e.printStackTrace();
         }
         try {
+            this.url = json.getString("url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
             this.cost = json.getLong("cost_in_credits");
         } catch (JSONException e) {
             e.printStackTrace();
             this.cost = -1;
         }
 //        this.category will be added by the child class
+        parseUrlForId();
+    }
+
+    private void parseUrlForId() {
+        // "https://swapi.co/api/planets/2/"
+        // "https://swapi.co/api/vehicles/4/"
+        final String[] urlComponents = this.url.split("/");
+        this.setImageId(Integer.parseInt(urlComponents[5]));
     }
 
     public String getName() {
@@ -45,7 +58,7 @@ public class Transport {
     }
 
     public void setName(String name) {
-        this.name = name;
+        super.name = name;
     }
 
     public String getModel() {
@@ -82,6 +95,6 @@ public class Transport {
 
     @Override
     public String toString() {
-        return String.format("%s - %d kph", this.name, this.maxSpeed);
+        return String.format("%s - %d kph", super.name, this.maxSpeed);
     }
 }

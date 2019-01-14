@@ -1,8 +1,33 @@
 package com.lambdaschool.swapi;
 
 public class DrawableResolver {
+    public static int getDrawableId(String category, int id) {
+        int drawable;
+        try {
+            switch (category) {
+                case "character":
+                    drawable = characters[id];
+                    break;
+                case "planet":
+                    drawable = planets[id];
+                    break;
+                case "starship":
+                    drawable = starships[id];
+                    break;
+                case "vehicle":
+                    drawable = vehicles[id];
+                    break;
+                default:
+                    drawable = R.drawable.placeholder;
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            drawable = R.drawable.placeholder;
+        }
+        return drawable;
+    }
+
     public static final int[] characters = new int[] {
-            0,
+            R.drawable.placeholder,
             R.drawable.characters_1,
             R.drawable.characters_2,
             R.drawable.characters_3,
@@ -93,7 +118,7 @@ public class DrawableResolver {
             R.drawable.characters_88
     };
     public static final int[] films = new int[] {
-            0,
+            R.drawable.placeholder,
             R.drawable.films_1,
             R.drawable.films_2,
             R.drawable.films_3,
@@ -103,7 +128,7 @@ public class DrawableResolver {
             R.drawable.films_7
     };
     public static final int[] planets = new int[] {
-            0,
+            R.drawable.placeholder,
             R.drawable.placeholder,
             R.drawable.planets_2,
             R.drawable.planets_3,
@@ -127,7 +152,7 @@ public class DrawableResolver {
             R.drawable.planets_21
     };
     public static final int[] species = new int[] {
-            0,
+            R.drawable.placeholder,
             R.drawable.species_1,
             R.drawable.species_2,
             R.drawable.species_3,
@@ -209,7 +234,7 @@ public class DrawableResolver {
             R.drawable.species_79
     };
     public static final int[] starships = new int[] {
-            0,
+            R.drawable.placeholder,
             R.drawable.placeholder,
             R.drawable.placeholder,
             R.drawable.placeholder,
@@ -260,7 +285,7 @@ public class DrawableResolver {
             R.drawable.starships_48
     };
     public static final int[] vehicles = new int[] {
-            0,
+            R.drawable.placeholder,
             R.drawable.placeholder,
             R.drawable.placeholder,
             R.drawable.placeholder,

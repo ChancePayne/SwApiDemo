@@ -4,7 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Planet
+public class Planet extends SwApiObject
 {
     protected String edited;
     protected String terrain;
@@ -14,7 +14,6 @@ public class Planet
     protected String surface_water;
     protected String orbital_period;
     protected String created;
-    protected String name;
     protected String rotation_period;
     protected String climate;
     protected String gravity;
@@ -67,7 +66,7 @@ public class Planet
             e.printStackTrace();
         }
         try {
-            this.name = json.getString("name");
+            super.name = json.getString("name");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -100,6 +99,13 @@ public class Planet
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        parseUrlForId();
+    }
+
+    private void parseUrlForId() {
+        // "https://swapi.co/api/planets/2/"
+        final String[] urlComponents = this.url.split("/");
+        this.setImageId(Integer.parseInt(urlComponents[5]));
     }
 
     public String getEdited()
@@ -189,7 +195,7 @@ public class Planet
 
     public void setName (String name)
     {
-        this.name = name;
+        super.name = name;
     }
 
     public String getRotation_period ()
