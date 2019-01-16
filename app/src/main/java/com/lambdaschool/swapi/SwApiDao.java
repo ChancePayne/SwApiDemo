@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SwApiDao {
     public interface ObjectCallback<T> {
-        void returnPlanets(T object);
+        void returnObject(T object);
     }
 
     public static void getAllPlanets(final AtomicBoolean canceled, final ObjectCallback<ArrayList<Planet>> objectCallback) {
@@ -67,7 +67,7 @@ public class SwApiDao {
                     /*synchronized (planets) {
                         planets.notify();
                     }*/
-                    objectCallback.returnPlanets(planets);
+                    objectCallback.returnObject(planets);
                 }
             }
         };
@@ -78,7 +78,7 @@ public class SwApiDao {
         NetworkAdapter.httpGetRequest("https://swapi.co/api/planets", canceled, callback);
     }
 
-    public static void getAllTransports(final ObjectCallback<Transport> objectCallback) {
+    public static void getAllTransports(final AtomicBoolean canceled, final ObjectCallback<Transport> objectCallback) {
         final ArrayList<Transport> transports = new ArrayList<>();
         final Semaphore lock = new Semaphore(1);
         NetworkAdapter.httpGetRequest("https://swapi.co/api/vehicles", new NetworkAdapter.NetworkCallback() {
@@ -93,7 +93,7 @@ public class SwApiDao {
                         try {
                             lock.acquire();
                             transports.add(new Vehicle(resultsArray.getJSONObject(i)));
-                            objectCallback.returnPlanets(transports.get(transports.size() - 1));
+                            objectCallback.returnObject(transports.get(transports.size() - 1));
                             lock.release();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -127,7 +127,7 @@ public class SwApiDao {
                         try {
                             lock.acquire();
                             transports.add(new Starship(resultsArray.getJSONObject(i)));
-                            objectCallback.returnPlanets(transports.get(transports.size() - 1));
+                            objectCallback.returnObject(transports.get(transports.size() - 1));
                             lock.release();
                         } catch (JSONException e) {
                             e.printStackTrace();

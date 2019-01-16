@@ -43,14 +43,7 @@ public class Transport extends SwApiObject {
             this.cost = -1;
         }
 //        this.category will be added by the child class
-        parseUrlForId();
-    }
-
-    private void parseUrlForId() {
-        // "https://swapi.co/api/planets/2/"
-        // "https://swapi.co/api/vehicles/4/"
-        final String[] urlComponents = this.url.split("/");
-        this.setImageId(Integer.parseInt(urlComponents[5]));
+        super.parseUrlForId(this.url);
     }
 
     public String getName() {

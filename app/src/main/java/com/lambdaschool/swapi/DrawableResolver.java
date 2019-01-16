@@ -5,16 +5,16 @@ public class DrawableResolver {
         int drawable;
         try {
             switch (category) {
-                case "character":
+                case "characters":
                     drawable = characters[id];
                     break;
-                case "planet":
+                case "planets":
                     drawable = planets[id];
                     break;
-                case "starship":
+                case "starships":
                     drawable = starships[id];
                     break;
-                case "vehicle":
+                case "vehicles":
                     drawable = vehicles[id];
                     break;
                 default:

@@ -1,16 +1,18 @@
 package com.lambdaschool.swapi;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.view.View;
+import android.view.Window;
 
 public class MainActivity extends AppCompatActivity implements SwApiListFragment.OnListFragmentInteractionListener {
 
@@ -19,15 +21,25 @@ public class MainActivity extends AppCompatActivity implements SwApiListFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            getWindow().setExitTransition(new Explode());
+            getWindow().setEnterTransition(new Explode());
+        }
+
         setContentView(R.layout.activity_main);
         context = this;
 
         Fragment fragment = new SwApiListFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_holder, fragment)
+                .commit();
     }
 
     @Override
-    public void onSwApiObjectListFragmentInteraction(SwApiObject item) {
+    public void onSwApiObjectListFragmentInteraction(SwApiObject item, View sharedView) {
         if (getResources().getBoolean(R.bool.is_tablet)) {
             // fragment_holder_detail
             final DetailFragment detailFragment = DetailFragment.newInstance(item);
@@ -35,7 +47,17 @@ public class MainActivity extends AppCompatActivity implements SwApiListFragment
         } else {
             Intent intent = new Intent(context, PhoneDetailActivity.class);
             intent.putExtra("swapi_item", item);
-            startActivity(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setEnterTransition(new Fade());
+                final ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(
+                        (Activity) context,
+                        sharedView,
+                        ViewCompat.getTransitionName(sharedView));
+//                        sharedView.getTransitionName());
+                startActivity(intent, activityOptions.toBundle());
+            } else {
+                startActivity(intent);
+            }
         }
     }
 }

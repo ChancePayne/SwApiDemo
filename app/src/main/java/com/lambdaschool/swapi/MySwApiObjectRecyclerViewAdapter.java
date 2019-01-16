@@ -1,10 +1,13 @@
 package com.lambdaschool.swapi;
 
 import android.app.Activity;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,12 +22,23 @@ import java.util.List;
  */
 public class MySwApiObjectRecyclerViewAdapter extends RecyclerView.Adapter<MySwApiObjectRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Planet>                   mValues; // TODO: Replace with SWAPIOBJECT
+    private final List<SwApiObject>                   mValues; // TODO: Replace with SWAPIOBJECT
     private final OnListFragmentInteractionListener mListener;
 
-    public MySwApiObjectRecyclerViewAdapter(List<Planet> items, OnListFragmentInteractionListener listener) {
+    public MySwApiObjectRecyclerViewAdapter(List<SwApiObject> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+    }
+
+    public void addItem(SwApiObject item) {
+        mValues.add(item);
+        this.notifyItemChanged(mValues.size() - 1);
+    }
+
+    public void addItem(List<SwApiObject> items) {
+        for(SwApiObject item: items) {
+            addItem(item);
+        }
     }
 
     @Override
@@ -43,12 +57,14 @@ public class MySwApiObjectRecyclerViewAdapter extends RecyclerView.Adapter<MySwA
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int drawableId = DrawableResolver.getDrawableId("planet", holder.mItem.getImageId());
+                final int drawableId = DrawableResolver.getDrawableId(holder.mItem.getCategory(), holder.mItem.getImageId());
                 ((Activity)holder.mView.getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         holder.mItem.setDrawableResourceId(drawableId);
-                        holder.mImageView.setImageDrawable(holder.mView.getContext().getDrawable(drawableId));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            holder.mImageView.setImageDrawable(holder.mView.getContext().getDrawable(drawableId));
+                        }
                     }
                 });
             }
@@ -60,10 +76,14 @@ public class MySwApiObjectRecyclerViewAdapter extends RecyclerView.Adapter<MySwA
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onSwApiObjectListFragmentInteraction(holder.mItem);
+                    mListener.onSwApiObjectListFragmentInteraction(holder.mItem, holder.mImageView);
                 }
             }
         });
+
+        Animation animation = AnimationUtils.loadAnimation(holder.mView.getContext(), android.R.anim.slide_in_left);
+        animation.setDuration(100L);
+        holder.mView.startAnimation(animation);
     }
 
     @Override

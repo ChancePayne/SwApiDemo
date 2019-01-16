@@ -72,13 +72,50 @@ public class SwApiListFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
+            recyclerView.setAdapter(new MySwApiObjectRecyclerViewAdapter(new ArrayList<SwApiObject>(), mListener));
+
             SwApiDao.getAllPlanets(new AtomicBoolean(false), new SwApiDao.ObjectCallback<ArrayList<Planet>>() {
                 @Override
-                public void returnPlanets(final ArrayList<Planet> object) {
+                public void returnObject(final ArrayList<Planet> object) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            recyclerView.setAdapter(new MySwApiObjectRecyclerViewAdapter(object, mListener));
+
+                            ArrayList<SwApiObject> parentObject = new ArrayList<>();
+                            parentObject.addAll(object);
+
+//                            recyclerView.setAdapter(new MySwApiObjectRecyclerViewAdapter(parentObject, mListener));
+
+                            ((MySwApiObjectRecyclerViewAdapter)recyclerView.getAdapter()).addItem(parentObject);
+                        }
+                    });
+                }
+            });
+            SwApiDao.getAllTransports(new AtomicBoolean(false), new SwApiDao.ObjectCallback<Transport>() {
+                @Override
+                public void returnObject(final Transport object) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            /*ArrayList<SwApiObject> parentObject = new ArrayList<>();
+                            parentObject.addAll(object);
+
+                            recyclerView.setAdapter(new MySwApiObjectRecyclerViewAdapter(parentObject, mListener));*/
+                            ((MySwApiObjectRecyclerViewAdapter)recyclerView.getAdapter()).addItem(object);
+                        }
+                    });
+                }
+
+                public void returnObject(final ArrayList<Transport> object) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            ArrayList<SwApiObject> parentObject = new ArrayList<>();
+                            parentObject.addAll(object);
+
+                            recyclerView.setAdapter(new MySwApiObjectRecyclerViewAdapter(parentObject, mListener));
                         }
                     });
                 }
@@ -117,6 +154,6 @@ public class SwApiListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onSwApiObjectListFragmentInteraction(SwApiObject item);
+        void onSwApiObjectListFragmentInteraction(SwApiObject item, View sharedView);
     }
 }

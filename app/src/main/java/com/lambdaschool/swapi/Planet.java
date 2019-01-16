@@ -99,13 +99,7 @@ public class Planet extends SwApiObject
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        parseUrlForId();
-    }
-
-    private void parseUrlForId() {
-        // "https://swapi.co/api/planets/2/"
-        final String[] urlComponents = this.url.split("/");
-        this.setImageId(Integer.parseInt(urlComponents[5]));
+        super.parseUrlForId(this.url);
     }
 
     public String getEdited()

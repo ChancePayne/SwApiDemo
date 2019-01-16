@@ -6,6 +6,7 @@
 
     <ImageView
         android:id="@+id/swapiobject_image"
+        android:transitionName="shared_image"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"

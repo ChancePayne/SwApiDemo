@@ -1,6 +1,7 @@
 package com.lambdaschool.swapi;
 
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -54,6 +55,7 @@ public class DetailFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = (SwApiObject) getArguments().getSerializable(ARG_PARAM1);
         }
+        getActivity().supportPostponeEnterTransition();
     }
 
     @Override
@@ -69,6 +71,25 @@ public class DetailFragment extends Fragment {
         final View      view1     = getView();
         final ImageView imageView = (ImageView) view.findViewById(R.id.detail_image);
         final FragmentActivity activity = getActivity();
-        imageView.setImageDrawable(activity.getDrawable(mParam1.getDrawableResourceId()));
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().supportStartPostponedEnterTransition();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            imageView.setImageDrawable(activity.getDrawable(mParam1.getDrawableResourceId()));
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 }
