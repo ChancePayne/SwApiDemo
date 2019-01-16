@@ -60,7 +60,7 @@ public class MySwApiObjectRecyclerViewAdapter extends RecyclerView.Adapter<MySwA
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onSwApiObjectListFragmentInteraction(holder.mItem);
+                    mListener.onSwApiObjectListFragmentInteraction(holder.mItem, holder.mImageView);
                 }
             }
         });

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.lambdaschool.swapi.dummy.DummyContent;
 import com.lambdaschool.swapi.dummy.DummyContent.DummyItem;
@@ -117,6 +118,6 @@ public class SwApiListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onSwApiObjectListFragmentInteraction(SwApiObject item);
+        void onSwApiObjectListFragmentInteraction(SwApiObject item, ImageView view);
     }
 }
