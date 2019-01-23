@@ -6,6 +6,12 @@ import org.json.JSONObject;
 public class Starship extends Transport {
     protected double hyperdriveRating;
 
+    public Starship(String name, String model, String manufacturer, String category, int cost, double hyperdriveRating) {
+        super(name, model, manufacturer, category, cost);
+        this.hyperdriveRating = hyperdriveRating;
+        super.maxSpeed = (long)calculateMaxSpeed();
+    }
+
     public Starship(JSONObject json) {
         super(json);
         try {
@@ -17,6 +23,10 @@ public class Starship extends Transport {
     }
 
     private double calculateMaxSpeed() {
-        return 1.079e+9 * this.hyperdriveRating;
+        return 1079252849 * this.hyperdriveRating;
+    }
+
+    public double getHyperdriveRating() {
+        return hyperdriveRating;
     }
 }

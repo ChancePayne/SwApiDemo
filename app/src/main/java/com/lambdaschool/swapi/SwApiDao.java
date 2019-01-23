@@ -17,61 +17,68 @@ public class SwApiDao {
 
     public static void getAllPlanets(final AtomicBoolean canceled, final ObjectCallback<ArrayList<Planet>> objectCallback) {
         final ArrayList<Planet> planets = new ArrayList<>();
-        final Semaphore lock = new Semaphore(1);
+        final Semaphore         lock    = new Semaphore(1);
         final NetworkAdapter.NetworkCallback callback = new NetworkAdapter.NetworkCallback() {
             @Override
             public void returnResult(Boolean success, String page) {
                 // process page of data
-                if(canceled.get()) {
+                if (canceled.get()) {
                     Log.i("GetRequestCanceled", page);
                     return;
                 }
-
-                String nextUrl = null;
+                JSONObject pageJson = null;
                 try {
-                    nextUrl = new JSONObject(page).getString("next");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    nextUrl = null;
-                }
-                // yay recursion!
-                if (nextUrl != null) {
-                    NetworkAdapter.httpGetRequest(nextUrl, canceled, this);
-                }
+                    pageJson = new JSONObject(page);
 
-                try {
-                    JSONObject pageJson     = new JSONObject(page);
-                    JSONArray  resultsArray = pageJson.getJSONArray("results");
-
-                    if(canceled.get()) {
-                        Log.i("GetRequestCanceled", page);
-                        return;
+                    String nextUrl = null;
+                    try {
+                        nextUrl = pageJson.getString("next");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        nextUrl = null;
+                    }
+                    // yay recursion!
+                    if (nextUrl != null) {
+                        NetworkAdapter.httpGetRequest(nextUrl, canceled, this);
                     }
 
-                    for (int i = 0; i < resultsArray.length(); ++i) {
-                        try {
-                            lock.acquire();
-                            planets.add(new Planet(resultsArray.getJSONObject(i)));
-                            lock.release();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                    try {
+                        JSONArray resultsArray = pageJson.getJSONArray("results");
+
+                        if (canceled.get()) {
+                            Log.i("GetRequestCanceled", page);
+                            return;
                         }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
-                if (nextUrl == null) {
+                        for (int i = 0; i < resultsArray.length(); ++i) {
+                            try {
+                                lock.acquire();
+                                planets.add(new Planet(resultsArray.getJSONObject(i)));
+                                lock.release();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (nextUrl == null) {
                     /*synchronized (planets) {
                         planets.notify();
                     }*/
-                    objectCallback.returnObject(planets);
+                        objectCallback.returnObject(planets);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+
             }
         };
-        if(canceled.get()) {
+        if (canceled.get()) {
             Log.i("GetRequestCanceled", "First");
             return;
         }
@@ -80,7 +87,7 @@ public class SwApiDao {
 
     public static void getAllTransports(final AtomicBoolean canceled, final ObjectCallback<Transport> objectCallback) {
         final ArrayList<Transport> transports = new ArrayList<>();
-        final Semaphore lock = new Semaphore(1);
+        final Semaphore            lock       = new Semaphore(1);
         NetworkAdapter.httpGetRequest("https://swapi.co/api/vehicles", new NetworkAdapter.NetworkCallback() {
             @Override
             public void returnResult(Boolean success, String page) {

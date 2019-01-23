@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Trace;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,20 +23,24 @@ public class MainActivity extends AppCompatActivity implements SwApiListFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Trace.beginSection("SettingAnimations");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
             getWindow().setExitTransition(new Explode());
             getWindow().setEnterTransition(new Explode());
         }
+        Trace.endSection();
 
         setContentView(R.layout.activity_main);
         context = this;
 
+        Trace.beginSection("Adding Fragment");
         Fragment fragment = new SwApiListFragment();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_holder, fragment)
                 .commit();
+        Trace.endSection();
     }
 
     @Override

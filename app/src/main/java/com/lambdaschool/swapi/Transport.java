@@ -86,6 +86,14 @@ public class Transport extends SwApiObject {
         this.cost = cost;
     }
 
+    public long getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(long maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
     @Override
     public String toString() {
         return String.format("%s - %d kph", super.name, this.maxSpeed);
