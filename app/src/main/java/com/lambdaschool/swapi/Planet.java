@@ -20,6 +20,24 @@ public class Planet extends SwApiObject
     protected String population;
     protected String[] residents;
 
+    public Planet(String edited, String terrain, String diameter, String[] films, String url, String surface_water, String orbital_period, String created, String rotation_period, String climate, String gravity, String population, String[] residents, String name) {
+        this.edited = edited;
+        this.terrain = terrain;
+        this.diameter = diameter;
+        this.films = films;
+        this.url = url;
+        this.surface_water = surface_water;
+        this.orbital_period = orbital_period;
+        this.created = created;
+        this.rotation_period = rotation_period;
+        this.climate = climate;
+        this.gravity = gravity;
+        this.population = population;
+        this.residents = residents;
+        super.name = name;
+        super.parseUrlForId(this.url);
+    }
+
     public Planet(JSONObject json) {
         try {
             this.edited = json.getString("edited");

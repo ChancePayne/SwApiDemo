@@ -20,7 +20,7 @@ public class PhoneDetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_phone_detail);
 
-        final DetailFragment detailFragment = DetailFragment.newInstance((SwApiObject) getIntent().getSerializableExtra("swapi_item"));
+        final DetailFragment detailFragment = DetailFragment.newInstance((SwApiObject) getIntent().getSerializableExtra(SwApiObject.SWAPI_ITEM_INTENT_TAG));
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder_detail, detailFragment).commit();
     }
 }

@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements SwApiListFragment
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder_detail, detailFragment).commit();
         } else {
             Intent intent = new Intent(context, PhoneDetailActivity.class);
-            intent.putExtra("swapi_item", item);
+            intent.putExtra(SwApiObject.SWAPI_ITEM_INTENT_TAG, item);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setEnterTransition(new Fade());
                 final ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(

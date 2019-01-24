@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 /**
@@ -66,7 +67,7 @@ public class DetailFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final View      view1     = getView();
         final ImageView imageView = (ImageView) view.findViewById(R.id.detail_image);
@@ -75,11 +76,11 @@ public class DetailFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
+                /*try {
                     Thread.sleep(150);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                }*/
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -87,6 +88,8 @@ public class DetailFragment extends Fragment {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             imageView.setImageDrawable(activity.getDrawable(mParam1.getDrawableResourceId()));
                         }
+                        ((TextView)view.findViewById(R.id.detail_text_name)).setText(mParam1.getName());
+                        ((TextView)view.findViewById(R.id.detail_text_category)).setText(mParam1.getCategory());
                     }
                 });
             }

@@ -3,6 +3,7 @@ package com.lambdaschool.swapi;
 import java.io.Serializable;
 
 public abstract class SwApiObject implements Serializable {
+    public static final String SWAPI_ITEM_INTENT_TAG = "swapi_item";
     protected int imageId, drawableResourceId;
     protected String name, category;
 
@@ -22,6 +23,7 @@ public abstract class SwApiObject implements Serializable {
         }
         if(urlComponents.length >= 3) {
             setCategory(urlComponents[4]);
+            setDrawableResourceId(DrawableResolver.getDrawableId(this.category, this.imageId));
         }
     }
 
